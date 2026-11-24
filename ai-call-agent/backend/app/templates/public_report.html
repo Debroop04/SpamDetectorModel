@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Complaint $reference</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+  :root { --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --bg:#F8FAFC; --card:#FFFFFF; --accent:#1D4ED8; --danger:#B91C1C; --ok:#15803D; --warn:#B45309; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif; }
+  header { background:var(--ink); color:#fff; }
+  .bar { max-width:960px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-weight:700; letter-spacing:-0.01em; display:flex; align-items:center; gap:10px; }
+  .mark { width:26px; height:26px; border-radius:7px; background:var(--accent); display:grid; place-items:center; }
+  main { max-width:960px; margin:0 auto; padding:28px 20px 48px; display:grid; gap:20px; }
+  h1 { font-size:26px; line-height:1.2; margin:0; letter-spacing:-0.02em; }
+  h2 { font-size:15px; margin:0 0 14px; }
+  .meta { color:var(--muted); font-size:14px; margin-top:6px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; }
+  .grid { display:grid; grid-template-columns: 1.2fr 1fr; gap:20px; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  dl { margin:0; display:grid; grid-template-columns: 150px 1fr; }
+  dt, dd { margin:0; padding:10px 0; border-bottom:1px solid var(--line); }
+  dt { color:var(--muted); }
+  dd { word-break: break-word; }
+  dl > :nth-last-child(-n+2) { border-bottom:0; }
+  .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:13px; font-weight:600; }
+  .pill.danger { background:#FEF2F2; color:var(--danger); border:1px solid #FECACA; }
+  .pill.ok { background:#F0FDF4; color:var(--ok); border:1px solid #BBF7D0; }
+  .pill.warn { background:#FFFBEB; color:var(--warn); border:1px solid #FDE68A; }
+  #map { height:300px; border-radius:10px; border:1px solid var(--line); }
+  .turn { display:grid; grid-template-columns: 90px 1fr; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .turn:last-child { border-bottom:0; }
+  .who { color:var(--muted); font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; padding-top:2px; }
+  .who.caller { color:var(--danger); }
+  ul.reasons { margin:0; padding-left:18px; }
+  ul.reasons li { margin:4px 0; }
+  label { display:block; font-size:13px; font-weight:600; margin:0 0 6px; }
+  input, textarea { width:100%; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font:inherit; background:#fff; color:var(--ink); }
+  input:focus, textarea:focus { outline:2px solid #BFDBFE; border-color:var(--accent); }
+  textarea { min-height:90px; resize:vertical; }
+  .field { margin-bottom:14px; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--accent); color:#fff; border:0; border-radius:8px; padding:11px 18px; font:inherit; font-weight:600; cursor:pointer; text-decoration:none; }
+  .btn.secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; }
+  .done { background:#F0FDF4; border-color:#BBF7D0; }
+  .notice { background:#FFFBEB; border-color:#FDE68A; color:#92400E; }
+  footer { color:var(--muted); font-size:13px; text-align:center; padding:0 20px 32px; }
+  footer strong { color:var(--danger); }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand"><span class="mark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Call Shield</div>
+    <span class="pill $status_class">$status_label</span>
+  </div>
+</header>
+<main>
+  <div>
+    <h1>Fraud call complaint</h1>
+    <div class="meta">$reference &middot; Filed $filed_at</div>
+  </div>
+  $mode_notice
+  $ack_block
+  <div class="grid">
+    <section class="card">
+      <h2>Incident</h2>
+      <dl>
+        <dt>Caller number</dt><dd><strong>$caller_number</strong></dd>
+        <dt>Time of call</dt><dd>$call_time</dd>
+        <dt>Type of fraud</dt><dd>$category</dd>
+        <dt>Risk score</dt><dd>$risk</dd>
+        <dt>Summary</dt><dd>$summary</dd>
+      </dl>
+    </section>
+    <section class="card">
+      <h2>Complainant</h2>
+      <dl>
+        <dt>Name</dt><dd>$user_name</dd>
+        <dt>Phone</dt><dd>$user_phone</dd>
+        <dt>Email</dt><dd>$user_email</dd>
+        <dt>Location</dt><dd>$address</dd>
+        <dt>Police station</dt><dd>$station</dd>
+      </dl>
+    </section>
+  </div>
+  $map_block
+  $reasons_block
+  $transcript_block
+  <div class="actions">
+    <a class="btn secondary" href="$pdf_url">Download PDF</a>
+    <a class="btn secondary" href="mailto:$user_email?subject=Regarding%20complaint%20$reference">Email complainant</a>
+  </div>
+</main>
+<footer>National Cyber Crime Helpline <strong>1930</strong> &middot; cybercrime.gov.in</footer>
+$map_script
+</body>
+</html>

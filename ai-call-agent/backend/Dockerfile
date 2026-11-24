@@ -1,40 +1,24 @@
-# ==============================================================================
-# AI Call Agent - Backend Production Container
-# ==============================================================================
-FROM python:3.11-slim AS base
+# Build from the ai-call-agent folder so the model files are included:
+#   docker build -f backend/Dockerfile -t call-shield-api .
+FROM python:3.12-slim
 
-# Prevent Python from writing .pyc files and enable unbuffered logging
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    MODEL_DIR=/app/spam-detector \
+    DATABASE_URL=sqlite:////app/data/callshield.db
 
-WORKDIR /app
+WORKDIR /app/backend
 
-# Install system dependencies (curl for health check, libpq for postgres)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    gcc \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+COPY backend/requirements.txt .
+RUN pip install -r requirements.txt
 
-# Install python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY backend/app ./app
+COPY spam-detector/spam_model.pkl spam-detector/tfidf_vectorizer.pkl spam-detector/spam_numbers.csv /app/spam-detector/
 
-# Create non-root user
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
-
-# Copy application source and migrations
-COPY --chown=appuser:appuser app ./app
-COPY --chown=appuser:appuser alembic ./alembic
-COPY --chown=appuser:appuser alembic.ini .
-
+RUN useradd -m -u 1000 appuser && mkdir -p /app/data && chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 8000
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

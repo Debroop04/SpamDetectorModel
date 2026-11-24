@@ -1,0 +1,6 @@
+# Optional: offline Hindi to English translation (about 1 GB with torch).
+# Without these, Hindi speech is translated with the free online fallback.
+transformers>=4.40
+torch>=2.3
+sentencepiece>=0.2
+sacremoses>=0.1
