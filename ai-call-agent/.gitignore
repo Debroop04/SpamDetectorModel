@@ -53,3 +53,6 @@ postgres_data/
 Thumbs.db
 *.swp
 *.swo
+
+# The published Android APK is served by the website
+!frontend/public/downloads/
