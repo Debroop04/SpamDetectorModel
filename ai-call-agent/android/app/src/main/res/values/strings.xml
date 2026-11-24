@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Call Shield</string>
+    <string name="channel_screening">Call screening</string>
+    <string name="channel_warnings">Scam warnings</string>
+</resources>
